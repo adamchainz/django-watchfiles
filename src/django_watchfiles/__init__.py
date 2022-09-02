@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import os
-import signal
-import sys
 from collections.abc import Callable, Generator
 from pathlib import Path
 from typing import Any
@@ -10,12 +7,7 @@ from typing import Any
 import watchfiles
 from django.conf import settings
 from django.utils import autoreload
-from django.utils.autoreload import (
-    DJANGO_AUTORELOAD_ENV,
-    logger,
-    restart_with_reloader,
-    start_django,
-)
+from django.utils.autoreload import run_with_reloader
 from django.utils.module_loading import import_string
 
 
@@ -40,26 +32,19 @@ class WatchfilesReloader(autoreload.BaseReloader):
             yield
 
 
-def run_with_reloader(main_func: Callable[..., Any], *args: Any, **kwargs: Any) -> None:
-    watchfiles_settings = getattr(settings, "DJANGO_WATCHFILES", {})
-    if watchfiles_settings.get("watch_filter"):
+def replaced_run_with_reloader(
+    main_func: Callable[..., Any], *args: Any, **kwargs: Any
+) -> None:
+    watchfiles_settings = getattr(settings, "WATCHFILES", {})
+    if "watch_filter" in watchfiles_settings:
         watchfiles_settings["watch_filter"] = import_string(
             watchfiles_settings["watch_filter"]
         )()
     if "debug" not in watchfiles_settings:
         watchfiles_settings["debug"] = kwargs["verbosity"] > 1
 
-    signal.signal(signal.SIGTERM, lambda *args: sys.exit(0))
-    try:
-        if os.environ.get(DJANGO_AUTORELOAD_ENV) == "true":
-            reloader = WatchfilesReloader(watchfiles_settings)
-            logger.info("Watching for file changes with %s", type(reloader).__name__)
-            start_django(reloader, main_func, *args, **kwargs)
-        else:
-            exit_code = restart_with_reloader()
-            sys.exit(exit_code)
-    except KeyboardInterrupt:
-        pass
+    autoreload.get_reloader = lambda: WatchfilesReloader(watchfiles_settings)
+    return run_with_reloader(main_func, *args, **kwargs)
 
 
-autoreload.run_with_reloader = run_with_reloader
+autoreload.run_with_reloader = replaced_run_with_reloader

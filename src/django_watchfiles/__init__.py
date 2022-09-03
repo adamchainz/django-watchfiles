@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable, Generator
 from pathlib import Path
 from typing import Any
@@ -41,7 +42,9 @@ def replaced_run_with_reloader(
             watchfiles_settings["watch_filter"]
         )()
     if "debug" not in watchfiles_settings:
-        watchfiles_settings["debug"] = kwargs["verbosity"] > 1
+        log_level = 40 - 10 * kwargs["verbosity"]
+        logging.getLogger("watchfiles").setLevel(log_level)
+        watchfiles_settings["debug"] = log_level == logging.DEBUG
 
     autoreload.get_reloader = lambda: WatchfilesReloader(watchfiles_settings)
     return run_with_reloader(main_func, *args, **kwargs)

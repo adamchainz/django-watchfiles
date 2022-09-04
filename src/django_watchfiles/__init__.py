@@ -41,10 +41,13 @@ def replaced_run_with_reloader(
         watchfiles_settings["watch_filter"] = import_string(
             watchfiles_settings["watch_filter"]
         )()
-    if "debug" not in watchfiles_settings:
+    if watchfiles_settings.get("debug"):
+        log_level = logging.DEBUG
+    else:
         log_level = 40 - 10 * kwargs["verbosity"]
-        logging.getLogger("watchfiles").setLevel(log_level)
-        watchfiles_settings["debug"] = log_level == logging.DEBUG
+
+    watchfiles_settings["debug"] = log_level == logging.DEBUG
+    logging.getLogger("watchfiles").setLevel(log_level)
 
     autoreload.get_reloader = lambda: WatchfilesReloader(watchfiles_settings)
     return run_with_reloader(main_func, *args, **kwargs)

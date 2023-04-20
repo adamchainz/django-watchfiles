@@ -26,10 +26,9 @@ class MutableWatcher:
         self.roots: set[Path] = set()
         self.filter = filter
 
-    def set_roots(self, roots: list[Path]) -> None:
-        roots_set = set(roots)
-        if roots_set != self.roots:
-            self.roots = roots_set
+    def set_roots(self, roots: set[Path]) -> None:
+        if roots != self.roots:
+            self.roots = roots
             self.change_event.set()
 
     def stop(self) -> None:
@@ -56,8 +55,8 @@ class WatchfilesReloader(autoreload.BaseReloader):
         self.watcher = MutableWatcher(self.file_filter)
         super().__init__()
 
-    def file_filter(self, change: watchfiles.Change, path: str) -> bool:
-        path = Path(path)  # TODO: does Django not pass a pathlib.Path now?
+    def file_filter(self, change: watchfiles.Change, filename: str) -> bool:
+        path = Path(filename)
         # print(f"Path: {path} / {change}")
         if path in set(self.watched_files(include_globs=False)):
             # print("Path in watched files")
@@ -66,7 +65,7 @@ class WatchfilesReloader(autoreload.BaseReloader):
             if path.is_relative_to(directory):
                 # print("Path is sub dir")
                 for glob in globs:
-                    if fnmatch.fnmatch(path.relative_to(directory), glob):
+                    if fnmatch.fnmatch(str(path.relative_to(directory)), glob):
                         # print("Path is glob match")
                         return True
         # print("file filter", change, path)
@@ -80,7 +79,7 @@ class WatchfilesReloader(autoreload.BaseReloader):
 
     def tick(self) -> Generator[None, None, None]:
         watched_files = list(self.watched_files(include_globs=False))
-        roots = autoreload.common_roots(self.watched_roots(watched_files))
+        roots = set(autoreload.common_roots(self.watched_roots(watched_files)))
         self.watcher.set_roots(roots)
 
         for changes in self.watcher:

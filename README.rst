@@ -20,6 +20,12 @@ django-watchfiles
 
 Use `watchfiles <https://watchfiles.helpmanual.io/>`__ in Django’s autoreloader.
 
+----
+
+**Improve your Django and Git skills** with `my books <https://adamj.eu/books/>`__.
+
+----
+
 Requirements
 ------------
 

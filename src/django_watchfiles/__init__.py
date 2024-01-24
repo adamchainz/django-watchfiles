@@ -62,10 +62,14 @@ class WatchfilesReloader(autoreload.BaseReloader):
             # print("Path in watched files")
             return True
         for directory, globs in self.directory_globs.items():
-            if path.is_relative_to(directory):
+            try:
+                relative_path = path.relative_to(directory)
+            except ValueError:
+                pass
+            else:
                 # print("Path is sub dir")
                 for glob in globs:
-                    if fnmatch.fnmatch(str(path.relative_to(directory)), glob):
+                    if fnmatch.fnmatch(str(relative_path), glob):
                         # print("Path is glob match")
                         return True
         # print("file filter", change, path)

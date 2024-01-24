@@ -2,6 +2,9 @@
 Changelog
 =========
 
+0.1.1 (2024-01-24)
+------------------
+
 * Fix Python 3.8 compatibility by replacing call to ``pathlib.Path.is_relative_to()``.
 
   Thanks to Nathan Koch in `PR #68 <https://github.com/adamchainz/django-watchfiles/pull/68>`__.

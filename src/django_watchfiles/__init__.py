@@ -1,14 +1,47 @@
 from __future__ import annotations
 
 import fnmatch
+import logging
 import threading
+import time
 from pathlib import Path
-from typing import Any
 from typing import Callable
 from typing import Generator
+from typing import Iterable
+from typing import Tuple
+from typing import TypeVar
 
 import watchfiles
 from django.utils import autoreload
+
+logger = logging.getLogger("django_watchfiles")
+
+
+# Duplicate `FileChange` type from `watchfiles`, which is not exported
+FileChange = Tuple[watchfiles.Change, str]
+
+
+T = TypeVar("T")
+
+
+def watch_safely(f: Callable[[], Iterable[T]], default: T) -> Iterable[T]:
+    """
+    Yield from `f()`, but when it fails, yield `default` once, log the exception and
+    retry, unless there are 2 exceptions within 1 second, in which case the exception
+    is raised.
+    """
+    ts: float | None = None
+    while True:
+        try:
+            yield from f()
+        except Exception as e:
+            current_ts = time.monotonic()
+            if ts is not None and current_ts - ts < 1.0:
+                # Exit after 2 exceptions within 1 second to avoid endlessly looping
+                raise
+            logger.warning(e, exc_info=True)
+            ts = current_ts
+            yield default
 
 
 class MutableWatcher:
@@ -34,17 +67,21 @@ class MutableWatcher:
     def stop(self) -> None:
         self.stop_event.set()
 
-    def __iter__(self) -> Generator[Any, None, None]:  # TODO: better type
+    def __iter__(self) -> Generator[set[FileChange], None, None]:
+        no_changes: set[FileChange] = set()
         while True:
             self.change_event.clear()
-            for changes in watchfiles.watch(
-                *self.roots,
-                watch_filter=self.filter,
-                stop_event=self.stop_event,
-                debounce=False,
-                rust_timeout=100,
-                yield_on_timeout=True,
-                ignore_permission_denied=True,
+            for changes in watch_safely(
+                lambda: watchfiles.watch(
+                    *self.roots,
+                    watch_filter=self.filter,
+                    stop_event=self.stop_event,
+                    debounce=False,
+                    rust_timeout=100,
+                    yield_on_timeout=True,
+                    ignore_permission_denied=True,
+                ),
+                default=no_changes,
             ):
                 if self.change_event.is_set():
                     break

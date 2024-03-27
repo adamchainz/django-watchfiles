@@ -44,6 +44,7 @@ class MutableWatcher:
                 debounce=False,
                 rust_timeout=100,
                 yield_on_timeout=True,
+                ignore_permission_denied=True,
             ):
                 if self.change_event.is_set():
                     break

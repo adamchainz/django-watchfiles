@@ -6,9 +6,9 @@ from typing import Any
 from typing import Callable
 from typing import Generator
 
-from django.utils import autoreload
 import globber
 import watchfiles
+from django.utils import autoreload
 
 
 class MutableWatcher:

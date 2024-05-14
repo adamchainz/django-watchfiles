@@ -3,3 +3,4 @@ django
 pytest
 pytest-django
 pytest-randomly
+globber

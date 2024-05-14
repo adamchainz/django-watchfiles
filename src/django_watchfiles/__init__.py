@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import fnmatch
 import threading
 from pathlib import Path
 from typing import Any
 from typing import Callable
 from typing import Generator
 
-import watchfiles
 from django.utils import autoreload
+import globber
+import watchfiles
 
 
 class MutableWatcher:
@@ -69,7 +69,7 @@ class WatchfilesReloader(autoreload.BaseReloader):
             else:
                 # print("Path is sub dir")
                 for glob in globs:
-                    if fnmatch.fnmatch(str(relative_path), glob):
+                    if globber.match(glob, str(relative_path)):
                         # print("Path is glob match")
                         return True
         # print("file filter", change, path)

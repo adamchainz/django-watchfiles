@@ -8,11 +8,10 @@ requires = [
 name = "django-watchfiles"
 version = "0.1.1"
 description = "Use watchfiles in Django’s autoreloader."
-readme = { file = "README.rst", content-type = "text/x-rst" }
+readme = "README.rst"
 keywords = [
   "Django",
 ]
-license = { text = "MIT" }
 authors = [
   { name = "Adam Johnson", email = "me@adamj.eu" },
 ]

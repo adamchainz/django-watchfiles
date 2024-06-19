@@ -6,4 +6,4 @@ def test_import():
 
     import django_watchfiles
 
-    assert django_watchfiles
+    assert django_watchfiles  # type: ignore [truthy-bool]

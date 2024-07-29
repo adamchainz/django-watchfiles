@@ -34,7 +34,7 @@ class MutableWatcher:
     def stop(self) -> None:
         self.stop_event.set()
 
-    def __iter__(self) -> Generator[Any, None, None]:  # TODO: better type
+    def __iter__(self) -> Generator[Any]:  # TODO: better type
         while True:
             self.change_event.clear()
             for changes in watchfiles.watch(
@@ -81,7 +81,7 @@ class WatchfilesReloader(autoreload.BaseReloader):
         sys_paths = set(autoreload.sys_path_directories())
         return frozenset((*extra_directories, *watched_file_dirs, *sys_paths))
 
-    def tick(self) -> Generator[None, None, None]:
+    def tick(self) -> Generator[None]:
         watched_files = list(self.watched_files(include_globs=False))
         roots = set(autoreload.common_roots(self.watched_roots(watched_files)))
         self.watcher.set_roots(roots)

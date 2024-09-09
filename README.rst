@@ -29,7 +29,7 @@ Use `watchfiles <https://watchfiles.helpmanual.io/>`__ in Django’s autoreloade
 Requirements
 ------------
 
-Python 3.8 to 3.12 supported.
+Python 3.8 to 3.13 supported.
 
 Django 3.2 to 5.1 supported.
 

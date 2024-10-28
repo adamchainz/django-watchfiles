@@ -122,6 +122,27 @@ class WatchfilesReloaderTests(SimpleTestCase):
 
         assert result is True
 
+    def test_file_filter_glob_multiple_globs_unmatched(self):
+        self.reloader.watch_dir(self.temp_path, "*.css")
+        self.reloader.watch_dir(self.temp_path, "*.html")
+
+        result = self.reloader.file_filter(
+            Change.modified, str(self.temp_path / "test.py")
+        )
+
+        assert result is False
+
+    def test_file_filter_glob_multiple_dirs_unmatched(self):
+        self.reloader.watch_dir(self.temp_path, "*.css")
+        temp_dir2 = self.enterContext(tempfile.TemporaryDirectory())
+        self.reloader.watch_dir(Path(temp_dir2), "*.html")
+
+        result = self.reloader.file_filter(
+            Change.modified, str(self.temp_path / "test.py")
+        )
+
+        assert result is False
+
     def test_file_filter_glob_relative_path_impossible(self):
         temp_dir2 = self.enterContext(tempfile.TemporaryDirectory())
 
@@ -132,6 +153,13 @@ class WatchfilesReloaderTests(SimpleTestCase):
         )
 
         assert result is False
+
+    def test_tick(self):
+        test_txt = self.temp_path / "test.txt"
+        test_txt.touch()
+        self.reloader.watched_files_set = {test_txt}
+
+        self.reloader.tick()
 
 
 class ReplacedGetReloaderTests(SimpleTestCase):

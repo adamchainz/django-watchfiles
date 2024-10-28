@@ -3,11 +3,11 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from django.test import SimpleTestCase
 from django.utils import autoreload
 
 from django_watchfiles import MutableWatcher
 from django_watchfiles import WatchfilesReloader
+from tests.compat import SimpleTestCase
 
 
 class MutableWatcherTests(SimpleTestCase):

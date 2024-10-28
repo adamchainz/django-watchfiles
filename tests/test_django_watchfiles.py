@@ -98,7 +98,6 @@ class WatchfilesReloaderTests(SimpleTestCase):
 
     def test_file_filter_watched_file(self):
         test_txt = self.temp_path / "test.txt"
-        test_txt.touch()
         self.reloader.watched_files_set = {test_txt}
 
         result = self.reloader.file_filter(Change.modified, str(test_txt))
@@ -107,7 +106,6 @@ class WatchfilesReloaderTests(SimpleTestCase):
 
     def test_file_filter_unwatched_file(self):
         test_txt = self.temp_path / "test.txt"
-        test_txt.touch()
 
         result = self.reloader.file_filter(Change.modified, str(test_txt))
 
@@ -156,10 +154,14 @@ class WatchfilesReloaderTests(SimpleTestCase):
 
     def test_tick(self):
         test_txt = self.temp_path / "test.txt"
-        test_txt.touch()
-        self.reloader.watched_files_set = {test_txt}
+        self.reloader.extra_files = {test_txt}
 
-        self.reloader.tick()
+        iterator = self.reloader.tick()
+        result = next(iterator)
+        assert result is None
+
+        result = self.reloader.file_filter(Change.modified, str(test_txt))
+        assert result is True
 
 
 class ReplacedGetReloaderTests(SimpleTestCase):

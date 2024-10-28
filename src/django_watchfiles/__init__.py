@@ -80,7 +80,9 @@ class WatchfilesReloader(autoreload.BaseReloader):
         extra_directories = self.directory_globs.keys()
         watched_file_dirs = {f.parent for f in watched_files}
         sys_paths = set(autoreload.sys_path_directories())
-        return frozenset((*extra_directories, *watched_file_dirs, *sys_paths))
+        all_dirs = (*extra_directories, *watched_file_dirs, *sys_paths)
+        existing_dirs = (p for p in all_dirs if p.exists())
+        return frozenset(existing_dirs)
 
     def tick(self) -> Generator[None]:
         self.watched_files_set = set(self.watched_files(include_globs=False))

@@ -4,6 +4,7 @@ import tempfile
 import time
 from pathlib import Path
 
+import pytest
 from django.utils import autoreload
 from watchfiles import Change
 
@@ -31,9 +32,20 @@ class MutableWatcherTests(SimpleTestCase):
         assert self.watcher.change_event.is_set()
 
     def test_stop(self):
-        assert not self.watcher.stop_event.is_set()
+        (self.temp_path / "test.txt").touch()
+        self.watcher.set_roots({self.temp_path})
+        iterator = iter(self.watcher)
+        # Flush initial events
+        next(iterator)
+
         self.watcher.stop()
-        assert self.watcher.stop_event.is_set()
+
+        with pytest.raises(StopIteration):
+            next(iterator)
+
+        # Not possible to restart
+        with pytest.raises(StopIteration):
+            next(iter(self.watcher))
 
     def test_iter_no_changes(self):
         (self.temp_path / "test.txt").touch()

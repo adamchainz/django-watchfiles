@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import tempfile
+import time
 from pathlib import Path
 
 from django.utils import autoreload
@@ -32,6 +33,18 @@ class MutableWatcherTests(SimpleTestCase):
         assert not self.watcher.stop_event.is_set()
         self.watcher.stop()
         assert self.watcher.stop_event.is_set()
+
+    def test_iter_no_changes(self):
+        (self.temp_path / "test.txt").touch()
+        self.watcher.set_roots({self.temp_path})
+        iterator = iter(self.watcher)
+        # flush initial events
+        next(iterator)
+        time.sleep(0.1)  # 100ms Rust timeout
+
+        changes = next(iterator)
+
+        assert changes == set()
 
     def test_iter_yields_changes(self):
         (self.temp_path / "test.txt").touch()

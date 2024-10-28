@@ -5,6 +5,7 @@ import time
 from pathlib import Path
 
 from django.utils import autoreload
+from watchfiles import Change
 
 from django_watchfiles import MutableWatcher
 from django_watchfiles import WatchfilesReloader
@@ -74,6 +75,51 @@ class MutableWatcherTests(SimpleTestCase):
 
         assert isinstance(changes, set)
         assert len(changes) == 0
+
+
+class WatchfilesReloaderTests(SimpleTestCase):
+    def setUp(self):
+        temp_dir = self.enterContext(tempfile.TemporaryDirectory())
+        self.temp_path = Path(temp_dir)
+
+        self.reloader = WatchfilesReloader()
+
+    def test_file_filter_watched_file(self):
+        test_txt = self.temp_path / "test.txt"
+        test_txt.touch()
+        self.reloader.watched_files_set = {test_txt}
+
+        result = self.reloader.file_filter(Change.modified, str(test_txt))
+
+        assert result is True
+
+    def test_file_filter_unwatched_file(self):
+        test_txt = self.temp_path / "test.txt"
+        test_txt.touch()
+
+        result = self.reloader.file_filter(Change.modified, str(test_txt))
+
+        assert result is False
+
+    def test_file_filter_glob_matched(self):
+        self.reloader.watch_dir(self.temp_path, "*.txt")
+
+        result = self.reloader.file_filter(
+            Change.modified, str(self.temp_path / "test.txt")
+        )
+
+        assert result is True
+
+    def test_file_filter_glob_relative_path_impossible(self):
+        temp_dir2 = self.enterContext(tempfile.TemporaryDirectory())
+
+        self.reloader.watch_dir(Path(temp_dir2), "*.txt")
+
+        result = self.reloader.file_filter(
+            Change.modified, str(self.temp_path / "test.txt")
+        )
+
+        assert result is False
 
 
 class ReplacedGetReloaderTests(SimpleTestCase):

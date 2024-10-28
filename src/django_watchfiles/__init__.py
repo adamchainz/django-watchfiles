@@ -37,6 +37,8 @@ class MutableWatcher:
 
     def __iter__(self) -> Generator[set[tuple[Change, str]]]:
         while True:
+            if self.stop_event.is_set():
+                return
             self.change_event.clear()
             for changes in watch(
                 *self.roots,

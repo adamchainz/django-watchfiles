@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import fnmatch
 import threading
+from collections.abc import Generator
 from pathlib import Path
 from typing import Any
 from typing import Callable
-from typing import Generator
 
 import watchfiles
 from django.utils import autoreload

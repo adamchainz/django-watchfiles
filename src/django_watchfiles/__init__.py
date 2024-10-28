@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-import fnmatch
 import threading
 from collections.abc import Generator
+from collections.abc import Iterable
+from fnmatch import fnmatch
 from pathlib import Path
-from typing import Any
 from typing import Callable
 
-import watchfiles
 from django.utils import autoreload
+from watchfiles import Change
+from watchfiles import watch
 
 
 class MutableWatcher:
@@ -20,7 +21,7 @@ class MutableWatcher:
     underlying watchfiles iterator when roots are added or removed.
     """
 
-    def __init__(self, filter: Callable[[watchfiles.Change, str], bool]) -> None:
+    def __init__(self, filter: Callable[[Change, str], bool]) -> None:
         self.change_event = threading.Event()
         self.stop_event = threading.Event()
         self.roots: set[Path] = set()
@@ -34,10 +35,10 @@ class MutableWatcher:
     def stop(self) -> None:
         self.stop_event.set()
 
-    def __iter__(self) -> Generator[Any]:  # TODO: better type
+    def __iter__(self) -> Generator[set[tuple[Change, str]]]:
         while True:
             self.change_event.clear()
-            for changes in watchfiles.watch(
+            for changes in watch(
                 *self.roots,
                 watch_filter=self.filter,
                 stop_event=self.stop_event,
@@ -53,11 +54,12 @@ class MutableWatcher:
 class WatchfilesReloader(autoreload.BaseReloader):
     def __init__(self) -> None:
         self.watcher = MutableWatcher(self.file_filter)
+        self.watched_files_set: set[Path] = set()
         super().__init__()
 
-    def file_filter(self, change: watchfiles.Change, filename: str) -> bool:
+    def file_filter(self, change: Change, filename: str) -> bool:
         path = Path(filename)
-        if path in set(self.watched_files(include_globs=False)):
+        if path in self.watched_files_set:
             return True
         for directory, globs in self.directory_globs.items():
             try:
@@ -65,20 +67,26 @@ class WatchfilesReloader(autoreload.BaseReloader):
             except ValueError:
                 pass
             else:
+                relative_path_str = str(relative_path)
                 for glob in globs:
-                    if fnmatch.fnmatch(str(relative_path), glob):
+                    if fnmatch(relative_path_str, glob):
                         return True
         return False
 
-    def watched_roots(self, watched_files: list[Path]) -> frozenset[Path]:
+    def watched_roots(self, watched_files: Iterable[Path]) -> frozenset[Path]:
+        # Adapted from WatchmanReloader
         extra_directories = self.directory_globs.keys()
         watched_file_dirs = {f.parent for f in watched_files}
         sys_paths = set(autoreload.sys_path_directories())
         return frozenset((*extra_directories, *watched_file_dirs, *sys_paths))
 
     def tick(self) -> Generator[None]:
-        watched_files = list(self.watched_files(include_globs=False))
-        roots = set(autoreload.common_roots(self.watched_roots(watched_files)))
+        self.watched_files_set = set(self.watched_files(include_globs=False))
+        roots = set(
+            autoreload.common_roots(
+                self.watched_roots(self.watched_files_set),
+            )
+        )
         self.watcher.set_roots(roots)
 
         for changes in self.watcher:

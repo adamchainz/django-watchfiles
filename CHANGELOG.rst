@@ -11,6 +11,10 @@ Unreleased
 
 * Support Python 3.13.
 
+* Fix crashing on non-existent directories, which Django sometimes tries to watch.
+
+  Thanks to baseplate-admin for the report in `Issue #12 <https://github.com/adamchainz/django-watchfiles/issues/12>`__ and Steven Mapes for the fix in `PR #117 <https://github.com/adamchainz/django-watchfiles/pull/117>`__.
+
 0.2.0 (2024-06-19)
 ------------------
 

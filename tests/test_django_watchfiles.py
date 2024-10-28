@@ -163,6 +163,14 @@ class WatchfilesReloaderTests(SimpleTestCase):
         result = self.reloader.file_filter(Change.modified, str(test_txt))
         assert result is True
 
+    def test_tick_non_existent_directory_watched(self):
+        does_not_exist = self.temp_path / "nope"
+        self.reloader.watch_dir(does_not_exist, "*.txt")
+
+        iterator = self.reloader.tick()
+        result = next(iterator)
+        assert result is None
+
 
 class ReplacedGetReloaderTests(SimpleTestCase):
     def test_replaced_get_reloader(self):

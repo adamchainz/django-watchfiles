@@ -57,9 +57,7 @@ class WatchfilesReloader(autoreload.BaseReloader):
 
     def file_filter(self, change: watchfiles.Change, filename: str) -> bool:
         path = Path(filename)
-        # print(f"Path: {path} / {change}")
         if path in set(self.watched_files(include_globs=False)):
-            # print("Path in watched files")
             return True
         for directory, globs in self.directory_globs.items():
             try:
@@ -67,12 +65,9 @@ class WatchfilesReloader(autoreload.BaseReloader):
             except ValueError:
                 pass
             else:
-                # print("Path is sub dir")
                 for glob in globs:
                     if fnmatch.fnmatch(str(relative_path), glob):
-                        # print("Path is glob match")
                         return True
-        # print("file filter", change, path)
         return False
 
     def watched_roots(self, watched_files: list[Path]) -> frozenset[Path]:

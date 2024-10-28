@@ -91,8 +91,8 @@ class WatchfilesReloader(autoreload.BaseReloader):
         )
         self.watcher.set_roots(roots)
 
-        for changes in self.watcher:
-            for _, path in changes:
+        for changes in self.watcher:  # pragma: no branch
+            for _, path in changes:  # pragma: no cover
                 self.notify_file_changed(Path(path))
             yield
 

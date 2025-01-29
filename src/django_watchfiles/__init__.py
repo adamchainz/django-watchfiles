@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import re
 import threading
 from collections.abc import Generator
 from collections.abc import Iterable
-from fnmatch import fnmatch
+from fnmatch import translate
 from pathlib import Path
 from typing import Callable
 
@@ -11,6 +12,19 @@ from django.utils import autoreload
 from watchfiles import Change
 from watchfiles import watch
 
+import sys
+if sys.version_info >= (3, 13):
+    MATCH_METHOD = lambda rel_path_str, glob: Path(rel_path_str).full_match(glob)
+else:
+
+    def full_match_backport(relative_path_str, glob):
+        # Full-match backport for python <= 3.12 with support for ** directories
+        # Not perfect; too greedy with `*/`, but much improved over fnmatch()
+        glob = glob.replace("**/", "**")
+        regex = re.compile(translate(glob))
+        return bool(regex.match(relative_path_str))
+
+    MATCH_METHOD = full_match_backport
 
 class MutableWatcher:
     """
@@ -71,7 +85,7 @@ class WatchfilesReloader(autoreload.BaseReloader):
             else:
                 relative_path_str = str(relative_path)
                 for glob in globs:
-                    if fnmatch(relative_path_str, glob):
+                    if MATCH_METHOD(relative_path_str, glob):
                         return True
         return False
 

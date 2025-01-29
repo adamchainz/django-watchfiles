@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import sys
 import threading
 from collections.abc import Generator
 from collections.abc import Iterable
@@ -12,7 +13,6 @@ from django.utils import autoreload
 from watchfiles import Change
 from watchfiles import watch
 
-import sys
 if sys.version_info >= (3, 13):
     MATCH_METHOD = lambda rel_path_str, glob: Path(rel_path_str).full_match(glob)
 else:
@@ -25,6 +25,7 @@ else:
         return bool(regex.match(relative_path_str))
 
     MATCH_METHOD = full_match_backport
+
 
 class MutableWatcher:
     """

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import sys
 import threading
 from collections.abc import Generator
 from collections.abc import Iterable
@@ -11,8 +12,6 @@ from typing import Callable
 from django.utils import autoreload
 from watchfiles import Change
 from watchfiles import watch
-
-import sys
 
 if sys.version_info >= (3, 13):
     def full_match(relative_path_str, glob):

@@ -15,13 +15,13 @@ from watchfiles import watch
 
 if sys.version_info >= (3, 13):
 
-    def full_match(relative_path_str, glob) -> bool:
+    def full_match(relative_path_str: str, glob: str) -> bool:
         return Path(relative_path_str).full_match(glob)
 
     MATCH_METHOD = full_match
 else:
 
-    def full_match_backport(relative_path_str, glob) -> bool:
+    def full_match_backport(relative_path_str: str, glob: str) -> bool:
         # Full-match backport for python <= 3.12 with support for ** directories
         # Not perfect; too greedy with `*/`, but much improved over fnmatch()
         glob = glob.replace("**/", "**")

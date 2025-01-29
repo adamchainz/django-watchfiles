@@ -13,8 +13,11 @@ from watchfiles import Change
 from watchfiles import watch
 
 import sys
+
 if sys.version_info >= (3, 13):
-    MATCH_METHOD = lambda rel_path_str, glob: Path(rel_path_str).full_match(glob)
+    def full_match(relative_path_str, glob):
+        return Path(relative_path_str).full_match(glob)
+    MATCH_METHOD = full_match
 else:
 
     def full_match_backport(relative_path_str, glob):
@@ -25,6 +28,7 @@ else:
         return bool(regex.match(relative_path_str))
 
     MATCH_METHOD = full_match_backport
+
 
 class MutableWatcher:
     """

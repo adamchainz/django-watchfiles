@@ -14,8 +14,10 @@ from watchfiles import Change
 from watchfiles import watch
 
 if sys.version_info >= (3, 13):
+
     def full_match(relative_path_str, glob):
         return Path(relative_path_str).full_match(glob)
+
     MATCH_METHOD = full_match
 else:
 

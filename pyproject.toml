@@ -44,7 +44,6 @@ urls = { Changelog = "https://github.com/adamchainz/django-watchfiles/blob/main/
 [dependency-groups]
 test = [
   "coverage[toml]",
-  "django",
   "pytest",
   "pytest-django",
   "pytest-randomly",

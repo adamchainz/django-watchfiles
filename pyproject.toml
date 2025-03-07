@@ -6,7 +6,7 @@ requires = [
 
 [project]
 name = "django-watchfiles"
-version = "1.0.0"
+version = "1.1.0"
 description = "Use watchfiles in Django’s autoreloader."
 readme = "README.rst"
 keywords = [
@@ -21,6 +21,7 @@ classifiers = [
   "Framework :: Django :: 4.2",
   "Framework :: Django :: 5.0",
   "Framework :: Django :: 5.1",
+  "Framework :: Django :: 5.2",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
   "Natural Language :: English",
@@ -39,6 +40,19 @@ dependencies = [
   "watchfiles",
 ]
 urls = { Changelog = "https://github.com/adamchainz/django-watchfiles/blob/main/CHANGELOG.rst", Funding = "https://adamj.eu/books/", Repository = "https://github.com/adamchainz/django-watchfiles" }
+
+[dependency-groups]
+test = [
+  "coverage[toml]",
+  "pytest",
+  "pytest-django",
+  "pytest-randomly",
+  "watchfiles",
+]
+django42 = [ "django>=4.2a1,<5; python_version>='3.8'" ]
+django50 = [ "django>=5.0a1,<5.1; python_version>='3.10'" ]
+django51 = [ "django>=5.1a1,<5.2; python_version>='3.10'" ]
+django52 = [ "django>=5.2a1,<6; python_version>='3.10'" ]
 
 [tool.isort]
 add_imports = [
@@ -93,3 +107,13 @@ allow_untyped_defs = true
 
 [tool.rstcheck]
 report_level = "ERROR"
+
+[tool.uv]
+conflicts = [
+  [
+    { group = "django42" },
+    { group = "django50" },
+    { group = "django51" },
+    { group = "django52" },
+  ],
+]

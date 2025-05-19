@@ -1,15 +1,13 @@
 from __future__ import annotations
 
 import threading
-from collections.abc import Generator
-from collections.abc import Iterable
+from collections.abc import Generator, Iterable
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import Callable
 
 from django.utils import autoreload
-from watchfiles import Change
-from watchfiles import watch
+from watchfiles import Change, watch
 
 
 class MutableWatcher:

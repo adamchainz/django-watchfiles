@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import sys
 from contextlib import AbstractContextManager
-from typing import Any
-from typing import Callable
-from typing import TypeVar
+from typing import Any, Callable, TypeVar
 
 from django import test
 

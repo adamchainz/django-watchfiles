@@ -8,8 +8,7 @@ import pytest
 from django.utils import autoreload
 from watchfiles import Change
 
-from django_watchfiles import MutableWatcher
-from django_watchfiles import WatchfilesReloader
+from django_watchfiles import MutableWatcher, WatchfilesReloader
 from tests.compat import SimpleTestCase
 
 

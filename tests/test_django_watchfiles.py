@@ -119,6 +119,15 @@ class WatchfilesReloaderTests(SimpleTestCase):
 
         assert result is True
 
+    def test_file_filter_recursive_glob_matched(self):
+        self.reloader.watch_dir(self.temp_path, "**/*.txt")
+
+        result = self.reloader.file_filter(
+            Change.modified, str(self.temp_path / "test.txt")
+        )
+
+        assert result is True
+
     def test_file_filter_glob_multiple_globs_unmatched(self):
         self.reloader.watch_dir(self.temp_path, "*.css")
         self.reloader.watch_dir(self.temp_path, "*.html")

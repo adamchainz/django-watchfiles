@@ -1,13 +1,24 @@
 from __future__ import annotations
 
+import sys
 import threading
 from collections.abc import Generator, Iterable
-from fnmatch import fnmatch
 from pathlib import Path
 from typing import Callable
 
 from django.utils import autoreload
 from watchfiles import Change, watch
+
+if sys.version_info >= (3, 13):
+    path_full_match = Path.full_match
+else:
+    # True backport turned out to be too hard. Instead, fall back to the
+    # pre-existing incorrect fnmatch implementation
+
+    from fnmatch import fnmatch
+
+    def path_full_match(path: Path, pattern: str) -> bool:
+        return fnmatch(str(path), pattern)
 
 
 class MutableWatcher:
@@ -67,10 +78,8 @@ class WatchfilesReloader(autoreload.BaseReloader):
             except ValueError:
                 pass
             else:
-                relative_path_str = str(relative_path)
-                for glob in globs:
-                    if fnmatch(relative_path_str, glob):
-                        return True
+                if any(path_full_match(relative_path, glob) for glob in globs):
+                    return True
         return False
 
     def watched_roots(self, watched_files: Iterable[Path]) -> frozenset[Path]:

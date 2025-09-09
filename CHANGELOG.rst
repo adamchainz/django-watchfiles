@@ -7,6 +7,15 @@ Unreleased
 
 * Support Python 3.14.
 
+* Correct glob matching to be equivalent to Django’s ``StatReloader`` for ``**`` patterns.
+  This fix is limited to Python 3.13+ because it depends the new |Path.full_match()|__ method.
+
+  .. |Path.full_match()| replace:: ``Path.full_match()``
+  __: https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.full_match
+
+  `PR #166 <https://github.com/adamchainz/django-watchfiles/pull/166>`__.
+  Thanks to Evgeny Arshinov for the report in `Issue #91 <https://github.com/adamchainz/django-watchfiles/issues/91>`__, and Stephen Mitchell for an initial pull request in `PR #134 <https://github.com/adamchainz/django-watchfiles/pull/134>`__.
+
 1.1.0 (2025-02-06)
 ------------------
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 import tempfile
 import time
 from pathlib import Path
@@ -119,6 +120,10 @@ class WatchfilesReloaderTests(SimpleTestCase):
 
         assert result is True
 
+    @pytest.mark.skipif(
+        sys.version_info < (3, 13),
+        reason="Path.full_match not available before Python 3.13",
+    )
     def test_file_filter_recursive_glob_matched(self):
         self.reloader.watch_dir(self.temp_path, "**/*.txt")
 

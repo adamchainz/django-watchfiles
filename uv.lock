@@ -153,8 +153,8 @@ name = "django"
 version = "4.2.23"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version < '3.10'",
     "python_full_version >= '3.10'",
+    "python_full_version < '3.10'",
 ]
 dependencies = [
     { name = "asgiref", marker = "python_full_version < '3.10' or extra == 'group-17-django-watchfiles-django42' or (extra == 'group-17-django-watchfiles-django50' and extra == 'group-17-django-watchfiles-django51') or (extra == 'group-17-django-watchfiles-django50' and extra == 'group-17-django-watchfiles-django52') or (extra == 'group-17-django-watchfiles-django51' and extra == 'group-17-django-watchfiles-django52')" },
@@ -219,7 +219,7 @@ wheels = [
 
 [[package]]
 name = "django-watchfiles"
-version = "1.1.0"
+version = "1.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "django", version = "4.2.23", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10' or extra == 'group-17-django-watchfiles-django42' or (extra == 'group-17-django-watchfiles-django50' and extra == 'group-17-django-watchfiles-django51') or (extra == 'group-17-django-watchfiles-django50' and extra == 'group-17-django-watchfiles-django52') or (extra == 'group-17-django-watchfiles-django51' and extra == 'group-17-django-watchfiles-django52')" },

@@ -7,11 +7,15 @@ from django.views.decorators.http import require_GET
 
 @require_GET
 def index(request: HttpRequest) -> HttpResponse:
+    # Inner import to test that changes to this file are also detected.
+    from example import fruits
+
     return render(
         request,
         "index.html",
         {
             "title": "Incredible citrus fruits.",
+            "fruits": fruits.get_citrus_fruits(),
         },
     )
 

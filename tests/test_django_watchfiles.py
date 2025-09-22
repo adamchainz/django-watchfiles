@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 import pytest
+from django.core.signals import request_finished
 from django.utils import autoreload
 from watchfiles import Change
 
@@ -185,6 +186,7 @@ class WatchfilesReloaderTests(SimpleTestCase):
         assert result is None
 
     def test_tick_error_introduced(self):
+        assert "tests.oops" not in sys.modules
         path = Path(__file__).parent / "oops.py"
 
         iterator = self.reloader.tick()
@@ -204,6 +206,23 @@ class WatchfilesReloaderTests(SimpleTestCase):
             result = next(iterator)
         finally:
             autoreload._error_files.pop()  # type: ignore[attr-defined]
+
+        assert result is None
+        assert path in self.reloader.watched_files_set
+
+    def test_tick_request_added_module(self):
+        assert "tests.lazy" not in sys.modules
+        path = Path(__file__).parent / "lazy.py"
+
+        iterator = self.reloader.tick()
+        result = next(iterator)
+        assert result is None
+
+        import tests.lazy  # noqa: F401
+
+        request_finished.send(sender=None)
+
+        result = next(iterator)
 
         assert result is None
         assert path in self.reloader.watched_files_set

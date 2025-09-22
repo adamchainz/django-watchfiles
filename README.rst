@@ -81,7 +81,7 @@ __ https://docs.djangoproject.com/en/stable/ref/django-admin/#runserver
   Meanwhile, ``WatchfilesReloader`` avoids polling; instead, it asks the operating system to report any changes to the watched files.
 
   The difference can be stark and save you significant battery when developing on a device that isn’t connected to a power source.
-  A quick benchmark on a medium-sized project (385,000 lines plus 206 installed packages) using an M1 MacBook showed ``StatReloader`` using ~10% of a core every other second, while ``WatchfilesReloader`` uses 0%.
+  A quick benchmark on a medium-sized project (385,000 lines plus 206 installed packages) using an M1 MacBook showed ``StatReloader`` using **~10%** of a CPU every other second, while ``WatchfilesReloader`` uses **0%**.
 
 * **Reduced reload time**
 

@@ -9,12 +9,9 @@
     <h1>🍊 {{ title }} 🍋</h1>
 
     <ul>
-      <li>Calamansi
-      <li>Etrog
-      <li>Finger lime
-      <li>Kumquat
-      <li>Sudachi
-      <li>Yuzu
+      {% for fruit in fruits %}
+        <li>{{ fruit }}
+      {% endfor %}
     </ul>
   </body>
 </html>

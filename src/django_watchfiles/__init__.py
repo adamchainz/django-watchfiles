@@ -4,8 +4,9 @@ import sys
 import threading
 from collections.abc import Generator, Iterable
 from pathlib import Path
-from typing import Callable
+from typing import Any, Callable
 
+from django.core.signals import request_finished
 from django.utils import autoreload
 from django.utils.autoreload import _error_files  # type: ignore [attr-defined]
 from watchfiles import Change, watch
@@ -65,9 +66,10 @@ class MutableWatcher:
 
 class WatchfilesReloader(autoreload.BaseReloader):
     def __init__(self) -> None:
+        super().__init__()
         self.watcher = MutableWatcher(self.file_filter)
         self.watched_files_set: set[Path] = set()
-        super().__init__()
+        self.processed_request = threading.Event()
 
     def file_filter(self, change: Change, filename: str) -> bool:
         path = Path(filename)
@@ -101,15 +103,29 @@ class WatchfilesReloader(autoreload.BaseReloader):
         )
         self.watcher.set_roots(roots)
 
+    def request_processed(self, **kwargs: Any) -> None:
+        self.processed_request.set()
+
     def tick(self) -> Generator[None]:
+        request_finished.connect(self.request_processed)
         num_error_files = len(_error_files)
         self.update_watches()
 
         for changes in self.watcher:  # pragma: no branch
+            should_update = False
+
             if len(_error_files) != num_error_files:
                 # Error files changed, pick them up.
-                self.update_watches()
+                should_update = True
                 num_error_files = len(_error_files)
+
+            if self.processed_request.is_set():
+                should_update = True
+                self.processed_request.clear()
+
+            if should_update:
+                self.update_watches()
+
             for _, path in changes:  # pragma: no cover
                 self.notify_file_changed(Path(path))
             yield

@@ -6,6 +6,19 @@ Changelog
 
   Thanks to Deepak Angrula for the report in `Issue #148 <https://github.com/adamchainz/django-watchfiles/issues/148>`__.
 
+* Watch and reload modules that are loaded during request serving.
+  For example, a module may only imported be within a view function, to avoid the initial startup time cost:
+
+  .. code-block:: python
+
+    def index(request):
+        from example import fruits
+
+        ...
+
+  Thanks to Tom Forbes for the mechanism in Django’s ``WatchmanReloader``.
+  `PR #171 <https://github.com/adamchainz/django-watchfiles/pull/171>`__.
+
 1.3.0 (2025-09-18)
 ------------------
 

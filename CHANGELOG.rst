@@ -2,6 +2,9 @@
 Changelog
 =========
 
+1.4.0 (2025-09-22)
+------------------
+
 * Use watchfiles’ debounce option to batch rapid file changes into a single reload.
   This feature avoids multiple reloads when multiple file changes occur in quick succession.
   Such batched changes can occur include when one file is saved and then updated by a formatter, or when multiple files are changed when you ``git switch`` to another branch.

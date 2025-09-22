@@ -6,7 +6,7 @@ requires = [
 
 [project]
 name = "django-watchfiles"
-version = "1.3.0"
+version = "1.4.0"
 description = "Make Django’s autoreloader more efficient by watching for changes with watchfiles."
 readme = "README.rst"
 keywords = [

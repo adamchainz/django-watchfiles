@@ -54,6 +54,8 @@ Installation
 
 That’s it! 😅
 
+Try installing `django-browser-reload <https://github.com/adamchainz/django-browser-reload>`__ as well, to make your browser automatically reload the page when changes are detected.
+
 Usage
 -----
 

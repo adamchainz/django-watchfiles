@@ -103,6 +103,15 @@ This is still more efficient than ``StatReloader`` though, because it’s implem
 watchfiles has some configuration options which can be configured through environment variables.
 See the `watchfiles documentation <https://watchfiles.helpmanual.io/api/watch/#watchfiles.watch>`__ for details.
 
+Example project
+---------------
+
+To demonstrate and test django-watchfiles in various situations, there is an example project included in the repository.
+Open |the example directory|__, follow the instructions in its README, and try it out.
+
+.. |the example directory| replace:: the ``example/`` directory
+__ https://github.com/adamchainz/django-watchfiles/tree/main/example
+
 History
 -------
 

@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Callable
 
 from django.utils import autoreload
+from django.utils.autoreload import _error_files  # type: ignore [attr-defined]
 from watchfiles import Change, watch
 
 if sys.version_info >= (3, 13):
@@ -91,7 +92,7 @@ class WatchfilesReloader(autoreload.BaseReloader):
         existing_dirs = (p for p in all_dirs if p.exists())
         return frozenset(existing_dirs)
 
-    def tick(self) -> Generator[None]:
+    def update_watches(self) -> None:
         self.watched_files_set = set(self.watched_files(include_globs=False))
         roots = set(
             autoreload.common_roots(
@@ -100,7 +101,15 @@ class WatchfilesReloader(autoreload.BaseReloader):
         )
         self.watcher.set_roots(roots)
 
+    def tick(self) -> Generator[None]:
+        num_error_files = len(_error_files)
+        self.update_watches()
+
         for changes in self.watcher:  # pragma: no branch
+            if len(_error_files) != num_error_files:
+                # Error files changed, pick them up.
+                self.update_watches()
+                num_error_files = len(_error_files)
             for _, path in changes:  # pragma: no cover
                 self.notify_file_changed(Path(path))
             yield

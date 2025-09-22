@@ -18,7 +18,7 @@ django-watchfiles
    :target: https://github.com/pre-commit/pre-commit
    :alt: pre-commit
 
-Use `watchfiles <https://watchfiles.helpmanual.io/>`__ in Django’s autoreloader.
+Make Django’s autoreloader more efficient by watching for changes with `watchfiles <https://watchfiles.helpmanual.io/>`__.
 
 ----
 

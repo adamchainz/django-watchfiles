@@ -2,6 +2,10 @@
 Changelog
 =========
 
+* Reload files after they fail with an import-time exception, like a ``SyntaxError``.
+
+  Thanks to Deepak Angrula for the report in `Issue #148 <https://github.com/adamchainz/django-watchfiles/issues/148>`__.
+
 1.3.0 (2025-09-18)
 ------------------
 

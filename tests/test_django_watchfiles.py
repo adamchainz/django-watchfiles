@@ -184,6 +184,30 @@ class WatchfilesReloaderTests(SimpleTestCase):
         result = next(iterator)
         assert result is None
 
+    def test_tick_error_introduced(self):
+        path = Path(__file__).parent / "oops.py"
+
+        iterator = self.reloader.tick()
+        result = next(iterator)
+        assert result is None
+
+        assert path not in self.reloader.watched_files_set
+
+        # Pretend the server thread tried to import the module and it failed
+        try:
+            from tests import oops  # noqa: F401
+        except ZeroDivisionError:
+            pass
+        autoreload._error_files.append(str(path))  # type: ignore[attr-defined]
+
+        try:
+            result = next(iterator)
+        finally:
+            autoreload._error_files.pop()  # type: ignore[attr-defined]
+
+        assert result is None
+        assert path in self.reloader.watched_files_set
+
 
 class ReplacedGetReloaderTests(SimpleTestCase):
     def test_replaced_get_reloader(self):

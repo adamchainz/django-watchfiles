@@ -1,0 +1,30 @@
+:root {
+  color: darkslateblue;
+}
+
+body {
+  background-color: lemonchiffon;
+  font-family: sans-serif;
+  text-align: center;
+  margin-top: 100px;
+  font-size: 40px;
+}
+
+.emoji {
+  font-size: 200px;
+}
+
+ul {
+  display: inline-block;
+  text-align: left;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: lemonchiffon;
+  }
+
+  body {
+    background-color: darkslateblue;
+  }
+}

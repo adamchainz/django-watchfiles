@@ -86,6 +86,15 @@ __ https://docs.djangoproject.com/en/stable/ref/django-admin/#runserver
   ``StatReloader`` can take one second or more to detect changes, while ``WatchfilesReloader`` can take as little as 50 milliseconds.
   This means that ``runserver`` starts reloading your code more quickly, and you can iterate more rapidly.
 
+* **Batched reloads**
+
+  Sometimes multiple file changes can occur in quick succession, such as when one file is saved and then updated by a formatter, or when multiple files are changed when you ``git switch`` to another branch.
+  In such cases, ``StatReloader`` can trigger multiple reloads, unnecessarily slowing down progress, or it can miss some changes, leading to old code being left running.
+  ``WatchfilesReloader`` instead batches changes, using watchfiles’ `debounce feature <https://watchfiles.helpmanual.io/api/watch/#:~:text=debounce,-int>`__, so that multiple changes will only trigger a single reload.
+
+  ``WatchfilesReloader`` uses watchfiles’ defaults here, waiting for changes within a 50 millisecond window, and repeating this wait for up to 1600 milliseconds, as long as changes keep occurring.
+  These values provide a good balance between responsiveness and batching.
+
 History
 -------
 

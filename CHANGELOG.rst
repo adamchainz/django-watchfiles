@@ -2,6 +2,12 @@
 Changelog
 =========
 
+* Use watchfiles’ debounce option to batch rapid file changes into a single reload.
+  This feature avoids multiple reloads when multiple file changes occur in quick succession.
+  Such batched changes can occur include when one file is saved and then updated by a formatter, or when multiple files are changed when you ``git switch`` to another branch.
+
+  `PR #172 <https://github.com/adamchainz/django-watchfiles/pull/172>`__.
+
 * Reload files after they fail with an import-time exception, like a ``SyntaxError``.
 
   Thanks to Deepak Angrula for the report in `Issue #148 <https://github.com/adamchainz/django-watchfiles/issues/148>`__.

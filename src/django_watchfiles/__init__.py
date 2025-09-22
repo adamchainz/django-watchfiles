@@ -55,7 +55,6 @@ class MutableWatcher:
                 *self.roots,
                 watch_filter=self.filter,
                 stop_event=self.stop_event,
-                debounce=False,
                 rust_timeout=100,
                 yield_on_timeout=True,
             ):

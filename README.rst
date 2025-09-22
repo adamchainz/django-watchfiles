@@ -97,6 +97,12 @@ __ https://docs.djangoproject.com/en/stable/ref/django-admin/#runserver
   ``WatchfilesReloader`` uses watchfiles’ defaults here, waiting for changes within a 50 millisecond window, and repeating this wait for up to 1600 milliseconds, as long as changes keep occurring.
   These values provide a good balance between responsiveness and batching.
 
+On some platforms (Windows Subsystem for Linux, or WSL), watchfiles will fall back to a polling approach.
+This is still more efficient than ``StatReloader`` though, because it’s implemented in Rust.
+
+watchfiles has some configuration options which can be configured through environment variables.
+See the `watchfiles documentation <https://watchfiles.helpmanual.io/api/watch/#watchfiles.watch>`__ for details.
+
 History
 -------
 

@@ -31,6 +31,11 @@ Requirements
 
 Python 3.9 to 3.14 supported.
 
+Correct behaviour for globs requires Python 3.13+ for |Path.full_match()|__, per `Issue #91 <https://github.com/adamchainz/django-watchfiles/issues/91>`__.
+
+.. |Path.full_match()| replace:: ``Path.full_match()``
+__ https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.full_match
+
 Django 4.2 to 6.0 supported.
 
 Installation

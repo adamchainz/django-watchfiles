@@ -20,6 +20,8 @@ django-watchfiles
 
 Make Django’s autoreloader more efficient by watching for changes with `watchfiles <https://watchfiles.helpmanual.io/>`__.
 
+Read more in `the introductory post <https://adamj.eu/tech/2025/09/22/introducing-django-watchfiles/>`__, or below.
+
 ----
 
 **Improve your Django and Git skills** with `my books <https://adamj.eu/books/>`__.

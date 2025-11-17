@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import sys
 import threading
-from collections.abc import Generator, Iterable
+from collections.abc import Callable, Generator, Iterable
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from django.core.signals import request_finished
 from django.utils import autoreload

@@ -31,7 +31,7 @@ Read more in `the introductory post <https://adamj.eu/tech/2025/09/22/introducin
 Requirements
 ------------
 
-Python 3.9 to 3.14 supported.
+Python 3.10 to 3.14 supported.
 
 Correct behaviour for globs requires Python 3.13+ for |Path.full_match()|__, per `Issue #91 <https://github.com/adamchainz/django-watchfiles/issues/91>`__.
 

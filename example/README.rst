@@ -1,7 +1,7 @@
 Example Project
 ===============
 
-Use Python 3.13 to set up with these commands:
+Use uv to set up with these commands:
 
 .. code-block:: sh
 

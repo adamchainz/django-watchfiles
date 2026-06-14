@@ -38,7 +38,7 @@ Correct behaviour for globs requires Python 3.13+ for |Path.full_match()|__, per
 .. |Path.full_match()| replace:: ``Path.full_match()``
 __ https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.full_match
 
-Django 5.2 to 6.0 supported.
+Django 5.2 to 6.1 supported.
 
 Installation
 ------------

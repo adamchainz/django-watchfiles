@@ -7,11 +7,11 @@ from pathlib import Path
 
 import pytest
 from django.core.signals import request_finished
+from django.test import SimpleTestCase
 from django.utils import autoreload
 from watchfiles import Change
 
 from django_watchfiles import MutableWatcher, WatchfilesReloader
-from tests.compat import SimpleTestCase
 
 
 class MutableWatcherTests(SimpleTestCase):
